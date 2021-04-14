@@ -1,0 +1,37 @@
+$script = <<END
+sudo apt-get install git -y
+sudo apt install ubuntu-desktop
+wget https://raw.githubusercontent.com/djelektronik1/OSMU/Lab 2/Test_file.txt
+cat Test_file.txt
+ping -c 4 192.168.1.10
+ping -c 4 192.168.1.20
+END
+
+
+Vagrant.configure(2) do |config|
+    config.vm.box = "ubuntu/trusty64"
+    config.vm.box_check_update = false
+
+
+    config.vm.define "ubuntu1" do |ubuntu1|
+        ubuntu1.vm.network  "public_network", ip: "192.168.1.10"
+        ubuntu1.vm.hostname = "vm1"		
+        ubuntu1.vm.provider "virtualbox" do |vb|
+           vb.memory = "1024"
+		   vb.gui = true
+        end
+		
+    end
+
+
+    config.vm.define "ubuntu2" do |ubuntu2|
+        ubuntu2.vm.network "public_network", ip: "192.168.1.20"
+        ubuntu2.vm.hostname = "vm2"		
+        ubuntu2.vm.provider "virtualbox" do |vb|
+            vb.memory = "1024"
+			vb.gui = true
+        end
+    end
+	
+    config.vm.provision "shell", inline: $script
+end
